@@ -16,11 +16,11 @@ public class RamEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "Ram")
+    @Column(name = "ram")
     private String ram;
 
-    @ManyToOne
-    @JoinColumn(name = "Category_id")
-    private CategoryEntity categoryEntity;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id")
+    private MainCategoryEntity mainCategoryEntity;
 }
 

@@ -22,7 +22,7 @@ public class ExcelController {
     private final ExcelService excelService;
 
     @PostMapping("/saveExcel")
-    public ResponseEntity<ApiResponse> uploadExcelFile(@RequestParam("file") MultipartFile multipartFile) throws IOException {
+    public ResponseEntity<ApiResponse> uploadExcelFile(@RequestPart("file") MultipartFile multipartFile) throws IOException {
         this.excelService.readFileAndSave(multipartFile);
         return new ResponseEntity<>(new ApiResponse(HttpStatus.OK, "File Saved!", new HashMap<>()), HttpStatus.OK);
     }

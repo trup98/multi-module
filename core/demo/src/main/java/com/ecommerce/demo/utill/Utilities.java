@@ -18,12 +18,12 @@ public class Utilities {
     private final UserRepository userRepository;
     private final TokenClaims tokenClaims;
 
-    /*<>flatMap used instead of map bcz userRepository.findById method already return Optional<UserEntity> so to prevent nested Optional object <>
-     * */
+//    flatMap used instead of map bcz userRepository.findById method already return Optional<UserEntity> so to prevent nested Optional object <>
     public UserEntity currentUser() {
-        return Optional.ofNullable(this.tokenClaims.getUserId())
+        UserEntity userEntity = Optional.ofNullable(this.tokenClaims.getUserId())
                 .flatMap(this.userRepository::findById)
                 .orElse(null);
+        return userEntity;
     }
 
 }

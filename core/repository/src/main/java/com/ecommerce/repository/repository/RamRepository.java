@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RamRepository extends JpaRepository<RamEntity, Long> {
-
-    Optional<RamEntity> findByRam(String ram);
+public interface RamRepository extends JpaRepository<RamEntity,Long> {
+    Optional<RamEntity>findByRam(String ram);
 }

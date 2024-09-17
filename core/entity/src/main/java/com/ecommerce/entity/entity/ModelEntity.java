@@ -15,11 +15,11 @@ public class ModelEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "Model_Name")
+    @Column(name = "model_name")
     private String modalName;
 
 
-    @ManyToOne
-    @JoinColumn(name = "Category_id")
-    private CategoryEntity categoryEntity;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id")
+    private MainCategoryEntity mainCategoryEntity;
 }

@@ -12,18 +12,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 @Slf4j
 @CrossOrigin("http://localhost:9093")
+
 public class LoginController {
 
     private final LoginService loginService;
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> getToken(@RequestBody @Valid LoginRequestDTO loginRequestDTO) {
-        System.out.println("Request Come In Login Controller------------");
         ResponseTokenDTO responseTokenDTO = this.loginService.getToken(loginRequestDTO);
         return new ResponseEntity<>(new ApiResponse(HttpStatus.OK, "Logged In User", responseTokenDTO), HttpStatus.OK);
 

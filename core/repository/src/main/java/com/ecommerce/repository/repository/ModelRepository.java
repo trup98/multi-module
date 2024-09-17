@@ -9,5 +9,4 @@ import java.util.Optional;
 @Repository
 public interface ModelRepository extends JpaRepository<ModelEntity, Long> {
     Optional<ModelEntity> findByModalName(String model);
-
 }

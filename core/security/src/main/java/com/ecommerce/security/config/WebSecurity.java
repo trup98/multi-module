@@ -29,7 +29,6 @@ public class WebSecurity {
     @Primary
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("Req come in web security------------------");
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(configure -> configure.configurationSource(crossOriginFilter.corsConfigurationSource()))

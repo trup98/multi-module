@@ -12,6 +12,8 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,9 +34,9 @@ public class JwtTokenProvider {
     private final JWSSigner jwsSigner;
     private final JWSVerifier jwsVerifier;
 
-    public JwtTokenProvider() throws JOSEException {
-        this.jwsSigner = new MACSigner(CommonEnum.SECRET_KEY.getValue().getBytes(StandardCharsets.UTF_8));
-        this.jwsVerifier = new MACVerifier(CommonEnum.SECRET_KEY.getValue().getBytes(StandardCharsets.UTF_8));
+    public JwtTokenProvider(@Value("${jwt.secretKey}") String secretKey) throws JOSEException {
+        this.jwsSigner = new MACSigner(secretKey.getBytes(StandardCharsets.UTF_8));
+        this.jwsVerifier = new MACVerifier(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     //  This method is used to resolve and get JWT token from HTTP request's header;
@@ -139,17 +141,18 @@ public class JwtTokenProvider {
                     .filter(foundEntry -> List.of(CommonEnum.USER_ID.getValue(), CommonEnum.USER_ROLE.getValue()).contains(foundEntry.getKey()))
                     .filter(foundEntry -> Optional.ofNullable(foundEntry.getValue()).isPresent() && Optional.ofNullable(foundEntry.getKey()).isPresent())
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-            return JWTClaimsSet.parse(actualClaims);
+            JWTClaimsSet parse = JWTClaimsSet.parse(actualClaims);
+            return parse;
         } catch (Exception e) {
             throw new CustomException(JwtExceptionEnum.INVALID_TOKEN.getValue(), HttpStatus.UNAUTHORIZED);
         }
     }
 
-    public String createToken(String username, String userRole) {
+    public String createToken(String username, String userRole, Long userId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(CommonEnum.USER_NAME.getValue(), username);
         claims.put(CommonEnum.USER_ROLE.getValue(), userRole);
+        claims.put(CommonEnum.USER_ID.getValue(), userId);
         // new with nimbus jose jwt
         return this.generateSignedJwt(username, claims).serialize();
     }

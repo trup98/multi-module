@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface InternalStorageRepository extends JpaRepository<InternalStorageEntity, Long> {
-
-    Optional<InternalStorageEntity> findByInternalStorage(String storage);
+public interface InternalStorageRepository extends JpaRepository<InternalStorageEntity,Long> {
+    Optional<InternalStorageEntity> findByInternalStorage(String internalStorage);
 }

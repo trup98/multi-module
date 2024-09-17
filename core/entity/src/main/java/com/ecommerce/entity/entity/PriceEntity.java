@@ -16,6 +16,6 @@ public class PriceEntity extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "Amount")
+    @Column(name = "amount")
     private int amount;
 }

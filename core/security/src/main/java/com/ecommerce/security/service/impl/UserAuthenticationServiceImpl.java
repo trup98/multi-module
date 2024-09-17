@@ -22,14 +22,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class UserAuthenticationServiceImpl implements UserAuthenticationService {
+
     private final UserRepository userRepository;
     private final UserRoleMappingRepository userRoleMappingRepository;
 
     @Override
-public Optional<UserDetails> findUserByEmail(String userName) {
+    public Optional<UserDetails> findUserByEmail(String userName) {
 
-        System.out.println("------------------------------------------------");
-        System.out.println("Called Database!!!!!!!!!!!");
         UserEntity userEntity = this.userRepository.findByEmail(userName).orElseThrow(() -> new RuntimeException(ExceptionEnum.USER_NOT_FOUND.getValue()));
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();

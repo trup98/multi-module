@@ -64,7 +64,6 @@ public class UserServiceImpl implements UserService {
             entity.setUpdatedBy(currentUser);
 
             UserEntity saveUserEntity = this.userRepository.save(entity);
-            log.info("User Saved :::::::::::::::::::::{}", saveUserEntity.getId());
 
             UserDetailsEntity userDetailsEntity = getUserDetailsEntity(registerUserDTO, saveUserEntity, currentUser);
             this.userDetailsRepository.save(userDetailsEntity);
