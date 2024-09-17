@@ -66,19 +66,6 @@ public class ExcelServiceImpl implements ExcelService {
                 String battery = row.getCell(9).getStringCellValue();
                 String processor = row.getCell(10).getStringCellValue();
 
-
-                System.out.println("category = " + category);
-                System.out.println("brand = " + brand);
-                System.out.println("model = " + model);
-                System.out.println("colorNames = " + colorNames.toString());
-                System.out.println("rams = " + rams.toString());
-                System.out.println("internalStorages = " + internalStorages.toString());
-                System.out.println("network = " + network);
-                System.out.println("simSlot = " + simSlot);
-                System.out.println("screenSize = " + screenSize);
-                System.out.println("battery = " + battery);
-                System.out.println("processor = " + processor);
-
                 // find in category master if not then save
                 var categoryEntity = this.categoryRepository.findByCategoryName(category).orElseGet(
                         () -> saveOrCreateCategoryEntity(category, currentUser));
@@ -111,58 +98,38 @@ public class ExcelServiceImpl implements ExcelService {
                         () -> saveOrCreateProcessor(processor, categoryEntity, currentUser));
 
 
-//                for (ColorEntity colorEntity : colorEntityList) {
-//                    for (RamEntity ramEntity : ramEntityList) {
-//                        for (InternalStorageEntity internalStorageEntity : internalStorageList) {
-//
-//                            ExcelRequestDto excelRequestDto = new ExcelRequestDto(categoryEntity, modelEntity, colorEntity, ramEntity, internalStorageEntity, brandEntity, simSlotEntity, batteryEntity, screenSizeEntity, processorEntity, networkEntity);
-//                            productRepository.findByAttributes(excelRequestDto).orElse(
-//
-//
-//                            );
-//
-//                        }
-//                    }
-//                }\
-
                 List<ProductEntity> productEntities = new ArrayList<>();
-                int totalSize = internalStorageList.size() * ramEntityList.size() * colorEntityList.size();
-                int colourSize = internalStorageList.size() * ramEntityList.size();
-                int ramSize = colorEntityList.size() * internalStorageList.size();
-                int internalSize = colorEntityList.size() * ramEntityList.size();
-                int colorIndex = 0;
-                int ramIndex = 0;
-                int internalIndex = 0;
-                int ramItems = 0, colorItems = 0, internalItems = 0;
-                for (int i = 0; i < totalSize; i++) {
-                    if (ramItems == ramSize) {
-                        ramIndex++;
-                        ramItems = 0;
-                    }
-                    if (colorItems == colourSize) {
-                        colorIndex++;
-                        colorItems = 0;
-                    }
-                    if (internalItems == internalSize) {
-                        internalIndex++;
-                        internalItems = 0;
-                    }
-                    ProductEntity productEntity = new ProductEntity(categoryEntity, modelEntity, brandEntity, simSlotEntity, batteryEntity, screenSizeEntity, processorEntity, networkEntity);
-                    productEntity.setColorEntity(colorEntityList.get(colorIndex));
-                    productEntity.setInternalStorageEntity(internalStorageList.get(internalIndex));
-                    productEntity.setRamEntity(ramEntityList.get(ramIndex));
-                    productEntity.setUpdatedBy(currentUser);
-                    productEntity.setCreatedBy(currentUser);
-                    ramItems++;
-                    colorItems++;
-                    internalItems++;
 
-                    ExcelRequestDto excelRequestDto = new ExcelRequestDto(categoryEntity, modelEntity, productEntity.getColorEntity(), productEntity.getRamEntity(), productEntity.getInternalStorageEntity(), brandEntity, simSlotEntity, batteryEntity, screenSizeEntity, processorEntity, networkEntity);
-                    var entity = this.productRepository.findByAttributes(excelRequestDto);
-                    if(!entity.isPresent())
-                            productEntities.add(productEntity);
+                // Iterate over each color
+                for (ColorEntity colorEntity : colorEntityList) {
+                    // Iterate over each RAM value
+                    for (RamEntity ramEntity : ramEntityList) {
+                        // Iterate over each internal storage value
+                        for (InternalStorageEntity internalStorageEntity : internalStorageList) {
+                            // Create a new ProductEntity for each combination
+                            ProductEntity productEntity = new ProductEntity(categoryEntity, modelEntity, brandEntity, simSlotEntity, batteryEntity, screenSizeEntity, processorEntity, networkEntity);
+                            productEntity.setColorEntity(colorEntity);              // Set color
+                            productEntity.setInternalStorageEntity(internalStorageEntity); // Set internal storage
+                            productEntity.setRamEntity(ramEntity);                  // Set RAM
+                            productEntity.setUpdatedBy(currentUser);
+                            productEntity.setCreatedBy(currentUser);
+
+                            // Create a DTO to check if this product combination already exists
+                            ExcelRequestDto excelRequestDto = new ExcelRequestDto(categoryEntity, modelEntity, colorEntity, ramEntity, internalStorageEntity, brandEntity, simSlotEntity, batteryEntity, screenSizeEntity, processorEntity, networkEntity);
+
+                            // Check if the combination exists
+                            var entity = this.productRepository.findByAttributes(excelRequestDto);
+                            if (entity.isEmpty()) {
+                                // If the product combination does not exist, add to list for saving
+                                productEntities.add(productEntity);
+                            }
+                        }
+                    }
                 }
+
+// Save all new product combinations to the repository
                 productRepository.saveAll(productEntities);
+
             }
         }
     }
@@ -212,9 +179,7 @@ public class ExcelServiceImpl implements ExcelService {
         List<InternalStorageEntity> internalStorageEntities = new ArrayList<>();
         items.forEach(r -> {
             var internalStorageLists = this.internalStorageRepository.findByInternalStorage(r);
-            if (internalStorageLists.isPresent()) {
-                internalStorageEntities.add(internalStorageLists.get());
-            } else {
+            if (internalStorageLists.isEmpty()) {
 
                 InternalStorageEntity internalStorageEntity = new InternalStorageEntity();
                 internalStorageEntity.setMainCategoryEntity(categoryEntity);
@@ -222,6 +187,8 @@ public class ExcelServiceImpl implements ExcelService {
                 internalStorageEntity.setUpdatedBy(currentUser);
                 internalStorageEntity.setInternalStorage(r);
                 internalStorageEntities.add(internalStorageEntity);
+            } else {
+                internalStorageEntities.add(internalStorageLists.get());
             }
         });
         this.internalStorageRepository.saveAll(internalStorageEntities);
