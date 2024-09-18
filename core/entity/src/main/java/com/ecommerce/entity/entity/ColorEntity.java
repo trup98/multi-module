@@ -10,6 +10,10 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "color",
+        indexes = {
+                @Index(name = "idx_color", columnList = "color", unique = true)
+        })
 public class ColorEntity extends BaseEntity {
 
     @Id
@@ -23,3 +27,4 @@ public class ColorEntity extends BaseEntity {
     @JoinColumn(name = "category_id")
     private MainCategoryEntity mainCategoryEntity;
 }
+

@@ -9,6 +9,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "internal_storage",
+        indexes = {
+                @Index(name = "idx_internal_storage", columnList = "internal_storage",unique = true)
+        })
 public class InternalStorageEntity extends BaseEntity{
 
     @Id

@@ -10,6 +10,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "model",
+        indexes = {
+                @Index(name = "idx_model", columnList = "model_name",unique = true)
+        })
 public class ModelEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -10,6 +10,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "ram",
+        indexes = {
+                @Index(name = "idx_ram", columnList = "ram",unique = true)
+        })
 public class RamEntity extends BaseEntity {
 
     @Id

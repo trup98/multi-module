@@ -25,7 +25,6 @@ import java.util.List;
 public class ExcelServiceImpl implements ExcelService {
 
     private final ProductRepository productRepository;
-    private final PriceRepository priceRepository;
     private final MainCategoryRepository categoryRepository;
     private final ModelRepository modelRepository;
     private final RamRepository ramRepository;
@@ -107,10 +106,18 @@ public class ExcelServiceImpl implements ExcelService {
                         // Iterate over each internal storage value
                         for (InternalStorageEntity internalStorageEntity : internalStorageList) {
                             // Create a new ProductEntity for each combination
-                            ProductEntity productEntity = new ProductEntity(categoryEntity, modelEntity, brandEntity, simSlotEntity, batteryEntity, screenSizeEntity, processorEntity, networkEntity);
-                            productEntity.setColorEntity(colorEntity);              // Set color
-                            productEntity.setInternalStorageEntity(internalStorageEntity); // Set internal storage
-                            productEntity.setRamEntity(ramEntity);                  // Set RAM
+                            ProductEntity productEntity = new ProductEntity(categoryEntity, modelEntity, colorEntityList, ramEntityList, internalStorageList, brandEntity, simSlotEntity, batteryEntity,screenSizeEntity,processorEntity,networkEntity);
+                            productEntity.setMainCategoryEntity(categoryEntity);
+                            productEntity.setModelEntity(modelEntity);
+                            productEntity.setColorEntity(colorEntity);
+                            productEntity.setRamEntity(ramEntity);
+                            productEntity.setInternalStorageEntity(internalStorageEntity);
+                            productEntity.setBrandEntity(brandEntity);
+                            productEntity.setSimSlotEntity(simSlotEntity);
+                            productEntity.setBatteryCapacityEntity(batteryEntity);
+                            productEntity.setScreenSizeEntity(screenSizeEntity);
+                            productEntity.setProcessorEntity(processorEntity);
+                            productEntity.setNetworkEntity(networkEntity);
                             productEntity.setUpdatedBy(currentUser);
                             productEntity.setCreatedBy(currentUser);
 
@@ -126,8 +133,7 @@ public class ExcelServiceImpl implements ExcelService {
                         }
                     }
                 }
-
-// Save all new product combinations to the repository
+                // Save all new product combinations to the repository
                 productRepository.saveAll(productEntities);
 
             }
@@ -138,9 +144,9 @@ public class ExcelServiceImpl implements ExcelService {
         List<String> items = Arrays.asList(colorNames.split("\\s*,\\s*"));
         List<ColorEntity> colorEntityList = new ArrayList<>();
         items.forEach(r -> {
-            var colorE = this.colorRepository.findByColor(r);
-            if (colorE.isPresent()) {
-                colorEntityList.add(colorE.get());
+            var existingColor = this.colorRepository.findByColor(r);
+            if (existingColor.isPresent()) {
+                colorEntityList.add(existingColor.get());
             } else {
                 ColorEntity colorEntity = new ColorEntity();
                 colorEntity.setMainCategoryEntity(categoryEntity);
@@ -150,8 +156,7 @@ public class ExcelServiceImpl implements ExcelService {
                 colorEntityList.add(colorEntity);
             }
         });
-        this.colorRepository.saveAll(colorEntityList);
-        return colorEntityList;
+        return this.colorRepository.saveAll(colorEntityList);
     }
 
     private List<RamEntity> saveOrCreateRamEntity(String ramNames, UserEntity currentUser, MainCategoryEntity categoryEntity) {
@@ -170,8 +175,8 @@ public class ExcelServiceImpl implements ExcelService {
                 ramEntityList.add(ramEntity);
             }
         });
-        this.ramRepository.saveAll(ramEntityList);
-        return ramEntityList;
+        return this.ramRepository.saveAll(ramEntityList);
+
     }
 
     private List<InternalStorageEntity> saveOrCreateInternalStorageEntities(String internalStorageNames, UserEntity currentUser, MainCategoryEntity categoryEntity) {
@@ -191,8 +196,8 @@ public class ExcelServiceImpl implements ExcelService {
                 internalStorageEntities.add(internalStorageLists.get());
             }
         });
-        this.internalStorageRepository.saveAll(internalStorageEntities);
-        return internalStorageEntities;
+        return this.internalStorageRepository.saveAll(internalStorageEntities);
+
     }
 
 

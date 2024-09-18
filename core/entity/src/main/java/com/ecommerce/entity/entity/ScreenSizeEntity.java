@@ -9,6 +9,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "screen_size",
+        indexes = {
+                @Index(name = "idx_screen_size", columnList = "screen_size", unique = true)
+        })
 public class ScreenSizeEntity extends BaseEntity {
 
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)

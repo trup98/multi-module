@@ -9,6 +9,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "brand",
+        indexes = {
+                @Index(name = "idx_brand", columnList = "brand_name", unique = true)
+        })
 public class BrandEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

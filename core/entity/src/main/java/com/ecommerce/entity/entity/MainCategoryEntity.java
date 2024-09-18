@@ -10,6 +10,10 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "main_category",
+        indexes = {
+                @Index(name = "idx_main_category", columnList = "category_name",unique = true)
+        })
 public class MainCategoryEntity extends BaseEntity {
 
     @Id

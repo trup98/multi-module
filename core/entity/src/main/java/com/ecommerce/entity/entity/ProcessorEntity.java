@@ -9,6 +9,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "processor",
+        indexes = {
+                @Index(name = "idx_processor", columnList = "processor_name",unique = true)
+        })
 public class ProcessorEntity extends BaseEntity {
 
     @Id

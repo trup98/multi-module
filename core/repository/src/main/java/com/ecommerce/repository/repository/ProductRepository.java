@@ -36,7 +36,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
                         AND p.batteryCapacityEntity = :#{#excelRequestDto.batteryCapacityEntity}
                         AND p.screenSizeEntity = :#{#excelRequestDto.screenSizeEntity}
                         AND p.processorEntity = :#{#excelRequestDto.processorEntity}
-                                               AND p.networkEntity = :#{#excelRequestDto.networkEntity}
+                        AND p.networkEntity = :#{#excelRequestDto.networkEntity}
             """)
     Optional<ProductEntity> findByAttributes(ExcelRequestDto excelRequestDto);
 

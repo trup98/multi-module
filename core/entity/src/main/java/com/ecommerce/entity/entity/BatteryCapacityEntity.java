@@ -9,6 +9,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "battery_capacity",
+        indexes = {
+                @Index(name = "idx_battery_capacity", columnList = "battery_capacity", unique = true)
+        })
 public class BatteryCapacityEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

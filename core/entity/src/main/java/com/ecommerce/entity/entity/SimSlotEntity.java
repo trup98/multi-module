@@ -9,6 +9,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "sim_slot",
+        indexes = {
+                @Index(name = "idx_sim_slot_type", columnList = "sim_slot_type", unique = true)
+        })
 public class SimSlotEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

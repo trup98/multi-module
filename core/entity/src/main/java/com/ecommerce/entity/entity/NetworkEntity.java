@@ -9,6 +9,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "network",
+        indexes = {
+                @Index(name = "idx_network", columnList = "network_type",unique = true)
+        })
 public class NetworkEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
